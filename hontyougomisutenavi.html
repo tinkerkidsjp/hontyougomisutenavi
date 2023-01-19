@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>新発田市本町ゴミ捨てナビ</title>
+<script>
+function moeru() {
+    var now = new Date();
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+    // 現在の曜日を取得
+    var dayOfWeek = now.getDay();
+    // 2月9日もしくは2月10日なら
+    if (month == 2 && date == 9 || month == 2 && date == 10) {
+        alert('次の収集日は2月14日(火)です。');
+    } else if (month == 2 && date == 21 || month == 2 && date == 22) {
+        alert('次の収集日は2月25日(土)です。');
+    } else if (month == 3 && date == 18 || month == 3 && date == 19 || month == 3 && date == 20){
+        alert('次の収集日は3月23日(木)です。');
+    // 曜日は0が日曜　もし現在の曜日が月・水・金曜なら
+    } else if (dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5) {
+        // 現在の日付に1日足す(例1月1日→1月2日　2月29日→3月1日)
+        now.setDate(date + 1);
+        month = now.getMonth() + 1;
+        date = now.getDate();
+        dayOfWeek = now.getDay();
+        var weekKanji = ['日', '月', '火', '水', '木', '金', '土'];
+        // weekKanji[dayOfWeek]は現在の曜日が番号になっているのでリストweekKanjiで漢字になおしている
+        alert('次の収集日は' + month + '月' + date + '日(' + weekKanji[dayOfWeek] + ')です。');
+    // もし2日後に収集日が来るなら(もし現在の曜日が日・火・木曜なら)
+    } else if (dayOfWeek == 0 || dayOfWeek == 2 || dayOfWeek == 4) {
+        now.setDate(date + 2);
+        month = now.getMonth() + 1;
+        date = now.getDate();
+        dayOfWeek = now.getDay();
+        var weekKanji = ['日', '月', '火', '水', '木', '金', '土'];
+        alert('次の収集日は' + month + '月' + date + '日(' + weekKanji[dayOfWeek] + ')です。');
+    // もしどれでもないなら（曜日が日から金でないなら）
+    } else {
+        now.setDate(date + 3);
+        month = now.getMonth() + 1;
+        date = now.getDate();
+        alert('次の収集日は' + month + '月' + date + '日(火)です。');
+    }
+}
+
+// moenaiCaiendarというリストを作る
+var moenaiCalendar = ['1216', '1320', '1417', '1517'];
+var akikanCalendar = ['1313', '1327', '1410', '1424','1510','1524'];
+var happouCalendar = ['1313', '1410', '1510'];
+var furununoCalendar = ['1327', '1424', '1524'];
+var sinbunCalendar = ['1318', '1330', '1413', '1427','1513','1530'];
+var akibinCalendar = ['1331', '1428', '1531'];
+
+// 関数answerにリストcalendarが送られてくる
+function answer(calendar) {
+    // 変数nowに現在の年月日データを入れる
+    var now = new Date();
+    // 現在の年を取得
+    var year = now.getFullYear();
+    // 変数monthにnowから月のデータを取って入れる（1月が0から始まっているから1を足す）
+    var month = now.getMonth() + 1;
+    if (month < 4) {
+        // monthをmonthに12を足した数にする
+        month = month + 12;
+    }
+    // 変数dateにnowから日のデータを取っていれる
+    var date = now.getDate();
+    // calendarの長さだけ繰り返す
+    for (var i = 0; i < calendar.length; i++) {
+        // month2という変数を作りそれの中にcalendarの月から12を引いた数を入れる
+        var month2 = calendar[i].slice(0,2) - 12;
+        // もし今日の月とカレンダーの月が等しかったら
+        if (month == calendar[i].slice(0,2)) {
+            // もし今日の日付けがカレンダーの日付けよりも小さかったら
+            if (date < calendar[i].slice(2,4)) {
+                // 次の収集日の年月日を取得
+                var answerDate = new Date(year, month2 - 1, calendar[i].slice(2,4));
+                // 次の収集日の曜日を取得する
+                var dayOfWeek = answerDate.getDay();
+                var weekKanji = ['日', '月', '火', '水', '木', '金', '土'];
+                // 次の収集日を表示する
+                alert('次の収集日は' + month2 + '月' + calendar[i].slice(2,4) + '日(' + weekKanji[dayOfWeek] + ')です。');
+                break;
+            } else {
+                // if文の場合（）がそのif文が発動する条件で｛｝が処理
+                if (month == 15) {
+                    alert('次の収集日は市役所のホームページを見てください。');
+                }
+            }
+        // でなければもし今日の月がカレンダーの月よりも小さかったら（これがないと23行目で違った12月がそのまま31行目で表示される）
+        } else if (month < calendar[i].slice(0,2)) {
+            var answerDate = new Date(year, month2 - 1, calendar[i].slice(2,4));
+            var dayOfWeek = answerDate.getDay();
+            var weekKanji = ['日', '月', '火', '水', '木', '金', '土'];
+            // もしcalendarが12よりも大きかったら
+            if (calendar[i].slice(0.2) > 12) {
+                alert('次の収集日は' + month2 + '月' + calendar[i].slice(2,4) + '日(' + weekKanji[dayOfWeek] + ')です。');
+                // ループから抜け出す
+                break;
+            } else {
+                alert('次の収集日は' + calendar[i].slice(0,2) + '月' + calendar[i].slice(2,4) + '日(' + weekKanji[dayOfWeek] + ')です。');
+                break;
+            }
+        }
+    }
+}
+
+</script>
+<style>
+button {
+    /* 文字のサイズを指定 */
+    font-size: 25px;
+    /* ボタンをblock要素にして縦に置く*/
+    display: block;
+    /* 上下の余白15px、左右はauto（中央寄せ）*/
+    margin: 15px auto;
+}
+</style>
+</head>
+<!--全体を中央に寄せる-->
+<body style="text-align: center">
+<!--<h1>で大見出し（題名などを書く）、<br>で改行-->
+<h1>新発田市本町<br>ゴミ捨てナビ</h1>
+<!--<p>段落（本文を書く時に使う）-->
+<p>2023年1月～2023年3月</p>
+<button onclick="moeru()">燃えるゴミ</button>
+<!--関数answerにリストmoenaiCalendarを渡す-->
+<button onclick="answer(moenaiCalendar)">燃えないゴミ</button>
+<button onclick="answer(akikanCalendar)">空き缶類</button>
+<button onclick="answer(happouCalendar)">発泡スチロール</button>
+<button onclick="answer(furununoCalendar)">古布</button>
+<button onclick="answer(sinbunCalendar)">新聞、段ボール、雑誌チラシ</button>
+<button onclick="answer(akibinCalendar)">空き瓶</button>
+</body>
+</html>
