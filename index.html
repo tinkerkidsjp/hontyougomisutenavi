@@ -13,11 +13,12 @@ function moeru() {
     var dayOfWeek = now.getDay();
     // 2月9日もしくは2月10日なら
     if (month == 2 && date == 9 || month == 2 && date == 10) {
-        alert('次の収集日は2月14日(火)です。');
+        // Id moeruを2/14(火)に書き換える
+        document.getElementById('moeru').textContent = '2/14(火)';
     } else if (month == 2 && date == 21 || month == 2 && date == 22) {
-        alert('次の収集日は2月25日(土)です。');
+        document.getElementById('moeru').textContent = '2/25(土)';
     } else if (month == 3 && date == 18 || month == 3 && date == 19 || month == 3 && date == 20){
-        alert('次の収集日は3月23日(木)です。');
+        document.getElementById('moeru').textContent = '3/23(木)';
     // 曜日は0が日曜　もし現在の曜日が月・水・金曜なら
     } else if (dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5) {
         // 現在の日付に1日足す(例1月1日→1月2日　2月29日→3月1日)
@@ -27,7 +28,7 @@ function moeru() {
         dayOfWeek = now.getDay();
         var weekKanji = ['日', '月', '火', '水', '木', '金', '土'];
         // weekKanji[dayOfWeek]は現在の曜日が番号になっているのでリストweekKanjiで漢字になおしている
-        alert('次の収集日は' + month + '月' + date + '日(' + weekKanji[dayOfWeek] + ')です。');
+        document.getElementById('moeru').textContent = month + '/' + date + '(' + weekKanji[dayOfWeek] + ')';
     // もし2日後に収集日が来るなら(もし現在の曜日が日・火・木曜なら)
     } else if (dayOfWeek == 0 || dayOfWeek == 2 || dayOfWeek == 4) {
         now.setDate(date + 2);
@@ -35,13 +36,13 @@ function moeru() {
         date = now.getDate();
         dayOfWeek = now.getDay();
         var weekKanji = ['日', '月', '火', '水', '木', '金', '土'];
-        alert('次の収集日は' + month + '月' + date + '日(' + weekKanji[dayOfWeek] + ')です。');
+        document.getElementById('moeru').textContent = month + '/' + date + '(' + weekKanji[dayOfWeek] + ')';
     // もしどれでもないなら（曜日が日から金でないなら）
     } else {
         now.setDate(date + 3);
         month = now.getMonth() + 1;
         date = now.getDate();
-        alert('次の収集日は' + month + '月' + date + '日(火)です。');
+        document.getElementById('moeru').textContent = month + '/' + date + '(火)';
     }
 }
 
@@ -52,8 +53,9 @@ var happouCalendar = ['1313', '1410', '1510'];
 var furununoCalendar = ['1327', '1424', '1524'];
 var sinbunCalendar = ['1318', '1330', '1413', '1427','1513','1530'];
 var akibinCalendar = ['1331', '1428', '1531'];
+var answerDates = [];
 
-// 関数answerにリストcalendarが送られてくる
+// 関数answerに入っているリストをリストcalendarに入れる
 function answer(calendar) {
     // 変数nowに現在の年月日データを入れる
     var now = new Date();
@@ -81,7 +83,7 @@ function answer(calendar) {
                 var dayOfWeek = answerDate.getDay();
                 var weekKanji = ['日', '月', '火', '水', '木', '金', '土'];
                 // 次の収集日を表示する
-                alert('次の収集日は' + month2 + '月' + calendar[i].slice(2,4) + '日(' + weekKanji[dayOfWeek] + ')です。');
+                answerDates.push(month2 + '/' + calendar[i].slice(2,4) + '(' + weekKanji[dayOfWeek] + ')');
                 break;
             } else {
                 // if文の場合（）がそのif文が発動する条件で｛｝が処理
@@ -96,26 +98,73 @@ function answer(calendar) {
             var weekKanji = ['日', '月', '火', '水', '木', '金', '土'];
             // もしcalendarが12よりも大きかったら
             if (calendar[i].slice(0.2) > 12) {
-                alert('次の収集日は' + month2 + '月' + calendar[i].slice(2,4) + '日(' + weekKanji[dayOfWeek] + ')です。');
+                answerDates.push(month2 + '/' + calendar[i].slice(2,4) + '(' + weekKanji[dayOfWeek] + ')');
                 // ループから抜け出す
                 break;
             } else {
-                alert('次の収集日は' + calendar[i].slice(0,2) + '月' + calendar[i].slice(2,4) + '日(' + weekKanji[dayOfWeek] + ')です。');
+                answerDates.push(calendar[i].slice(0,2) + '/' + calendar[i].slice(2,4) + '(' + weekKanji[dayOfWeek] + ')');
                 break;
             }
         }
     }
 }
 
+// このプログラムを開いたときに実行する
+window.onload = function() {
+    moeru();
+    answer(moenaiCalendar);
+    answer(akikanCalendar);
+    answer(happouCalendar);
+    answer(furununoCalendar);
+    answer(sinbunCalendar);
+    answer(akibinCalendar);
+    // Id moenaiをにanswerDatesの0番に書き換える
+    document.getElementById('moenai').textContent = answerDates[0];
+    document.getElementById('akikan').textContent = answerDates[1];
+    document.getElementById('happou').textContent = answerDates[2];
+    document.getElementById('furununo').textContent = answerDates[3];
+    document.getElementById('sinbun').textContent = answerDates[4];
+    document.getElementById('akibin').textContent = answerDates[5];
+}
+
 </script>
 <style>
-button {
+body {
+    /* 背景の色を変える*/
+	background-color: rgb(253, 253, 253);
+}
+table {
     /* 文字のサイズを指定 */
-    font-size: 25px;
-    /* ボタンをblock要素にして縦に置く*/
-    display: block;
-    /* 上下の余白15px、左右はauto（中央寄せ）*/
+    font-size: 18px;
     margin: 15px auto;
+    /* となりあった線を1本にする*/
+    border-collapse: collapse;
+}
+td {
+    /* 表の内容を左に揃える*/
+    text-align: left;
+    /* 3ピクセルのグレーの実線をかく(周りの枠)*/
+    border:1px rgb(158, 158, 158) solid;
+    padding: 8px;
+}
+th {
+    text-align: center;
+    border:1px rgb(158, 158, 158) solid;
+    background-color: #39a73b;
+    color: #ffffff;
+    padding: 8px;
+}
+h1 {
+    background-color: #39a73b;
+    color: #ffffff;
+    padding: 8px;
+    padding-top: 14px;
+}
+p {
+    margin: 3px;
+}
+table tr:nth-child(odd){
+    background-color: #e2e0e0;
 }
 </style>
 </head>
@@ -125,13 +174,44 @@ button {
 <h1>新発田市本町<br>ゴミ捨てナビ</h1>
 <!--<p>段落（本文を書く時に使う）-->
 <p>2023年1月～2023年3月</p>
-<button onclick="moeru()">燃えるゴミ</button>
-<!--関数answerにリストmoenaiCalendarを渡す-->
-<button onclick="answer(moenaiCalendar)">燃えないゴミ</button>
-<button onclick="answer(akikanCalendar)">空き缶類</button>
-<button onclick="answer(happouCalendar)">発泡スチロール</button>
-<button onclick="answer(furununoCalendar)">古布</button>
-<button onclick="answer(sinbunCalendar)">新聞、段ボール、雑誌チラシ</button>
-<button onclick="answer(akibinCalendar)">空き瓶</button>
+<p>ゴミの種類をタップすると<br>その種類の一覧表が出ます</p>
+<table>
+    <tr>
+        <th>ゴミの種類</th>
+        <th>次の収集日</th>
+    </tr>
+    <tr>
+        <!--セルにリンクを貼る-->
+        <td><a href="moeru.html">燃えるゴミ</a></td>
+        <!--燃えるゴミの収集日の欄にmoeruというIdをつけている-->
+        <td id="moeru"></td>
+    </tr>
+    <tr>
+        <td><a href="moenai.html">燃えないゴミ</a></td>
+        <td id="moenai"></td>
+    </tr>
+    <tr>
+        <td><a href="akikan.html">空き缶類</a></td>
+        <td id="akikan"></td>
+    </tr>
+    <tr>
+        <td><a href="happou.html">発泡スチロール</a></td>
+        <td id="happou"></td>
+    </tr>
+    <tr>
+        <td><a href="furununo.html">古布</a></td>
+        <td id="furununo"></td>
+    </tr>
+    <tr>
+        <td style="font-size: 15px;"><a href="sinbun.html">新聞、段ボール、雑誌、チラシ</a></td>
+        <td id="sinbun"></td>
+    </tr>
+    <tr>
+        <td><a href="akibin.html">空き瓶</a></td>
+        <td id="akibin"></td>
+    </tr>
+</table>
+<input type="text">
+<button>検索</button>
 </body>
 </html>
